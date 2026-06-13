@@ -28,7 +28,9 @@ except (ImportError, ValueError) as exc:
 
 
 APP_ID = "io.github.patx.twig"
+APP_ICON = "twig"
 UNTITLED = "Untitled"
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def read_text_file(path):
@@ -77,6 +79,16 @@ def install_css():
     )
 
 
+def set_window_icon(window):
+    window.set_icon_name(APP_ICON)
+    icon_path = BASE_DIR / "icons" / "twig.png"
+    if icon_path.exists():
+        try:
+            window.set_icon_from_file(str(icon_path))
+        except GLib.Error:
+            pass
+
+
 class TwigWindow(Gtk.ApplicationWindow):
     def __init__(self, app, path=None):
         super().__init__(application=app)
@@ -88,6 +100,7 @@ class TwigWindow(Gtk.ApplicationWindow):
         self.view = GtkSource.View.new_with_buffer(self.buffer)
 
         self.set_default_size(920, 640)
+        set_window_icon(self)
         self._build_actions()
         self._build_ui()
         self._configure_editor()
@@ -636,6 +649,7 @@ class TwigApp(Gtk.Application):
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
+        Gtk.Window.set_default_icon_name(APP_ICON)
         install_css()
 
         quit_action = Gio.SimpleAction.new("quit", None)

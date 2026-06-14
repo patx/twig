@@ -3,8 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 <title>Twig — minimal code editor</title>
 <style>
+  :root {
+    color-scheme: light dark;
+    --page-bg: #fff;
+    --text: #111;
+    --body-text: #444;
+    --muted: #888;
+    --subtle: #bbb;
+    --code-bg: #f2f2f2;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page-bg: #111;
+      --text: #f2f2f2;
+      --body-text: #d0d0d0;
+      --muted: #a0a0a0;
+      --subtle: #777;
+      --code-bg: #242424;
+    }
+  }
+
   body {
     font-family: monospace;
     font-size: 15px;
@@ -12,22 +34,22 @@
     max-width: 600px;
     margin: 60px auto;
     padding: 0 20px 80px;
-    color: #111;
-    background: #fff;
+    color: var(--text);
+    background: var(--page-bg);
   }
   h1 { font-size: 1.1rem; margin: 0 0 8px; }
-  h2 { font-size: 0.85rem; margin: 40px 0 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
-  p  { color: #444; margin: 0 0 8px; }
-  ul { padding-left: 1.2em; color: #444; margin: 0; }
+  h2 { font-size: 0.85rem; margin: 40px 0 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  p  { color: var(--body-text); margin: 0 0 8px; }
+  ul { padding-left: 1.2em; color: var(--body-text); margin: 0; }
   li { margin: 2px 0; }
   table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
   td { padding: 4px 0; vertical-align: top; }
-  td:first-child { width: 55%; color: #111; }
-  td:last-child { color: #888; }
-  code { background: #f2f2f2; padding: 1px 5px; }
-  a { color: #111; }
-  footer { margin-top: 48px; color: #bbb; font-size: 0.8rem; }
-  pre { background: #f2f2f2; padding: 12px; margin: 0; overflow-x: auto; }
+  td:first-child { width: 55%; color: var(--text); }
+  td:last-child { color: var(--muted); }
+  code { background: var(--code-bg); color: var(--text); padding: 1px 5px; }
+  a { color: var(--text); }
+  footer { margin-top: 48px; color: var(--subtle); font-size: 0.8rem; }
+  pre { background: var(--code-bg); padding: 12px; margin: 0; overflow-x: auto; }
   .site-title { display: flex;   justify-content: center; align-items: center; gap: 10px; margin-bottom: 25px; }
   .site-title img { height: 150px; width: auto; }
 </style>

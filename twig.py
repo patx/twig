@@ -20,7 +20,7 @@ try:
 except (ImportError, ValueError) as exc:
     print(
         "Twig requires GTK 3, PyGObject, and GtkSourceView.\n"
-        "On CrunchBang++/Debian, install:\n"
+        "On Debian/Ubuntu, install:\n"
         "  sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-4\n"
         f"\nStartup error: {exc}",
         file=sys.stderr,

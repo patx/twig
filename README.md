@@ -1,20 +1,19 @@
 # Twig
-
-Twig is a small GTK code editor intended for lightweight Linux desktops such
-as CrunchBang++. It focuses on the basics: one file per window, open/save,
+Twig is a small GTK code editor intended for lightweight Linux. 
+It focuses on the basics: one file per window, open/save,
 syntax highlighting, line numbers, find/replace, undo/redo, dirty indicators,
 and save-before-close prompts.
 
 
 ## Dependencies
 
-On CrunchBang++ or Debian-based systems:
+On Ubuntu or Debian-based systems:
 
 ```sh
 sudo apt install python3 python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-4
 ```
 
-Some older systems package GtkSourceView 3 instead:
+Some older systems package GtkSourceView 3 instead of 4:
 
 ```sh
 sudo apt install gir1.2-gtksource-3.0

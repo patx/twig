@@ -69,6 +69,8 @@ Twig intentionally has no toolbar or menu bar. Use these keyboard shortcuts:
 | `Ctrl+Shift+G` or `Shift+F3` | Find previous match |
 | `Ctrl+H` or `Ctrl+R` | Open Find and Replace with the replace field focused |
 | `Ctrl+J` | Jump to line |
+| `Ctrl+Shift++` | Increase editor font size |
+| `Ctrl+Shift+-` | Decrease editor font size |
 | `Tab` with selected lines | Indent selected lines with spaces |
 | `Shift+Tab` with selected lines | Unindent selected lines |
 | `Enter` in Find | Find next match |

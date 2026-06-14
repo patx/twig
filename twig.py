@@ -31,6 +31,10 @@ APP_ID = "io.github.patx.twig"
 APP_ICON = "twig"
 UNTITLED = "Untitled"
 BASE_DIR = Path(__file__).resolve().parent
+DEFAULT_EDITOR_FONT_SIZE = 10
+MIN_EDITOR_FONT_SIZE = 6
+MAX_EDITOR_FONT_SIZE = 24
+EDITOR_FONT_STEP = 1
 
 
 def read_text_file(path):
@@ -69,6 +73,29 @@ def install_css():
         background: #181b20;
         color: #7f8a99;
     }
+
+    headerbar.twig-titlebar,
+    headerbar.twig-titlebar:backdrop {
+        background: #181b20;
+        background-image: none;
+        border-color: #111318;
+        box-shadow: none;
+        color: #d8dee9;
+    }
+
+    headerbar.twig-titlebar button.titlebutton,
+    headerbar.twig-titlebar button.titlebutton:backdrop {
+        background: transparent;
+        background-image: none;
+        border-color: transparent;
+        box-shadow: none;
+        color: #d8dee9;
+    }
+
+    headerbar.twig-titlebar button.titlebutton:hover {
+        background: #2a3038;
+        background-image: none;
+    }
     """
     provider = Gtk.CssProvider()
     provider.load_from_data(css)
@@ -96,16 +123,23 @@ class TwigWindow(Gtk.ApplicationWindow):
         self.path = Path(path).resolve() if path else None
         self.encoding = "utf-8"
         self.find_dialog = None
+        self.editor_font_size = DEFAULT_EDITOR_FONT_SIZE
+        self.editor_css_name = f"twig-editor-{id(self):x}"
+        self.editor_css_provider = Gtk.CssProvider()
         self.buffer = GtkSource.Buffer()
         self.view = GtkSource.View.new_with_buffer(self.buffer)
+        self.view.set_name(self.editor_css_name)
 
         self.set_default_size(920, 640)
+        self._build_titlebar()
         set_window_icon(self)
         self._build_actions()
         self._build_ui()
         self._configure_editor()
+        self._install_editor_css()
         self.buffer.connect("modified-changed", lambda _buffer: self.update_title())
         self.connect("delete-event", self._on_delete_event)
+        self.connect("destroy", self._on_destroy)
 
         if self.path:
             self.load()
@@ -143,6 +177,13 @@ class TwigWindow(Gtk.ApplicationWindow):
             action.connect("activate", callback)
             self.add_action(action)
 
+    def _build_titlebar(self):
+        self.headerbar = Gtk.HeaderBar()
+        self.headerbar.set_show_close_button(True)
+        self.headerbar.set_has_subtitle(False)
+        self.headerbar.get_style_context().add_class("twig-titlebar")
+        self.set_titlebar(self.headerbar)
+
     def _build_ui(self):
         root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
 
@@ -175,6 +216,42 @@ class TwigWindow(Gtk.ApplicationWindow):
             if scheme:
                 self.buffer.set_style_scheme(scheme)
                 break
+
+    def _install_editor_css(self):
+        self._apply_editor_font_size()
+        Gtk.StyleContext.add_provider_for_screen(
+            Gdk.Screen.get_default(),
+            self.editor_css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION + 1,
+        )
+
+    def _apply_editor_font_size(self):
+        css = f"""
+        #{self.editor_css_name},
+        #{self.editor_css_name} text,
+        #{self.editor_css_name} border {{
+            font: {self.editor_font_size}pt monospace;
+        }}
+        """.encode()
+        self.editor_css_provider.load_from_data(css)
+        self.view.queue_resize()
+        self.view.queue_draw()
+
+    def _change_editor_font_size(self, delta):
+        new_size = min(
+            MAX_EDITOR_FONT_SIZE,
+            max(MIN_EDITOR_FONT_SIZE, self.editor_font_size + delta),
+        )
+        if new_size != self.editor_font_size:
+            self.editor_font_size = new_size
+            self._apply_editor_font_size()
+        return True
+
+    def _on_destroy(self, *_args):
+        Gtk.StyleContext.remove_provider_for_screen(
+            Gdk.Screen.get_default(),
+            self.editor_css_provider,
+        )
 
     def apply_language(self):
         manager = GtkSource.LanguageManager.get_default()
@@ -413,7 +490,9 @@ class TwigWindow(Gtk.ApplicationWindow):
     def update_title(self):
         dirty = "*" if self.buffer.get_modified() else ""
         name = str(self.path) if self.path else self.title_name
-        self.set_title(f"{dirty}{name} - Twig")
+        title = f"{dirty}{name} - Twig"
+        self.set_title(title)
+        self.headerbar.set_title(title)
 
     def show_error(self, title, detail):
         dialog = Gtk.MessageDialog(
@@ -523,7 +602,25 @@ class TwigWindow(Gtk.ApplicationWindow):
     def on_select_all(self, *_args):
         self.buffer.select_range(self.buffer.get_start_iter(), self.buffer.get_end_iter())
 
+    def _is_editor_font_shortcut(self, event):
+        state = event.state & Gtk.accelerator_get_default_mod_mask()
+        required = Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK
+        if (state & required) != required:
+            return False
+        return event.keyval in (
+            Gdk.KEY_plus,
+            Gdk.KEY_equal,
+            Gdk.KEY_KP_Add,
+            Gdk.KEY_minus,
+            Gdk.KEY_underscore,
+            Gdk.KEY_KP_Subtract,
+        )
+
     def on_key_press(self, _view, event):
+        if self._is_editor_font_shortcut(event):
+            if event.keyval in (Gdk.KEY_minus, Gdk.KEY_underscore, Gdk.KEY_KP_Subtract):
+                return self._change_editor_font_size(-EDITOR_FONT_STEP)
+            return self._change_editor_font_size(EDITOR_FONT_STEP)
         if event.keyval == Gdk.KEY_Tab and self.buffer.get_has_selection():
             return self.indent_selection()
         if event.keyval in (Gdk.KEY_ISO_Left_Tab, Gdk.KEY_Tab) and event.state & Gdk.ModifierType.SHIFT_MASK:

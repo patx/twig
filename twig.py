@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Twig: a tiny GTK code editor for lightweight Linux desktops."""
 
+import os
 import sys
 from pathlib import Path
 
@@ -35,6 +36,23 @@ DEFAULT_EDITOR_FONT_SIZE = 10
 MIN_EDITOR_FONT_SIZE = 6
 MAX_EDITOR_FONT_SIZE = 24
 EDITOR_FONT_STEP = 1
+HEADERBAR_DESKTOPS = {"gnome", "pantheon"}
+
+
+def should_use_headerbar():
+    desktop_names = (
+        os.environ.get("XDG_CURRENT_DESKTOP", ""),
+        os.environ.get("XDG_SESSION_DESKTOP", ""),
+        os.environ.get("DESKTOP_SESSION", ""),
+        os.environ.get("GDMSESSION", ""),
+    )
+    tokens = {
+        token.strip().lower()
+        for name in desktop_names
+        for token in name.replace(";", ":").split(":")
+        if token.strip()
+    }
+    return bool(tokens & HEADERBAR_DESKTOPS)
 
 
 def read_text_file(path):
@@ -178,6 +196,10 @@ class TwigWindow(Gtk.ApplicationWindow):
             self.add_action(action)
 
     def _build_titlebar(self):
+        self.headerbar = None
+        if not should_use_headerbar():
+            return
+
         self.headerbar = Gtk.HeaderBar()
         self.headerbar.set_show_close_button(True)
         self.headerbar.set_has_subtitle(False)
@@ -492,7 +514,8 @@ class TwigWindow(Gtk.ApplicationWindow):
         name = str(self.path) if self.path else self.title_name
         title = f"{dirty}{name} - Twig"
         self.set_title(title)
-        self.headerbar.set_title(title)
+        if self.headerbar:
+            self.headerbar.set_title(title)
 
     def show_error(self, title, detail):
         dialog = Gtk.MessageDialog(

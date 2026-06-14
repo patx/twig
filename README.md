@@ -5,7 +5,6 @@ as CrunchBang++. It focuses on the basics: one file per window, open/save,
 syntax highlighting, line numbers, find/replace, undo/redo, dirty indicators,
 and save-before-close prompts.
 
-Repository: <https://github.com/patx/twig>
 
 ## Dependencies
 

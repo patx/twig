@@ -1,37 +1,89 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Twig - Ultra minimal code editor for MacOS and Linux</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Twig — minimal code editor</title>
+<style>
+  body {
+    font-family: monospace;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 600px;
+    margin: 60px auto;
+    padding: 0 20px 80px;
+    color: #111;
+    background: #fff;
+  }
+  h1 { font-size: 1.1rem; margin: 0 0 8px; }
+  h2 { font-size: 0.85rem; margin: 40px 0 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #888; }
+  p  { color: #444; margin: 0 0 8px; }
+  ul { padding-left: 1.2em; color: #444; margin: 0; }
+  li { margin: 2px 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  td { padding: 4px 0; vertical-align: top; }
+  td:first-child { width: 55%; color: #111; }
+  td:last-child { color: #888; }
+  code { background: #f2f2f2; padding: 1px 5px; }
+  a { color: #111; }
+  footer { margin-top: 48px; color: #bbb; font-size: 0.8rem; }
+  pre { background: #f2f2f2; padding: 12px; margin: 0; overflow-x: auto; }
+  .site-title { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .site-title img { height: 28px; width: auto; }
+  .site-title h1 { margin: 0; }
+</style>
 </head>
 <body>
-<img src="https://gitman.io/patx/twig/raw/docs/logo.png">
-<h1>Twig is an ultra minimal code editor for MacOS and Linux</h1>
-<p>Twig is a small GTK code editor intended for lightweight Linux desktops such as CrunchBang++.
-It focuses on the basics: one file per window, open/save, syntax highlighting, line numbers,
-find/replace, undo/redo, dirty indicators, and auto-indent.</p>
-<img src="https://gitman.io/patx/twig/raw/docs/screenshot.png">
-<h2>Keybindings</h2>
-<p>Twig intentionally has no toolbar or menu bar. Use these keyboard shortcuts:</p>
-<code>Ctrl+N or Ctrl+T</code> Open a new empty editor window<br>
-<code>Ctrl+O</code> Open one or more files<br>
-<code>Ctrl+S</code>	Save the current file<br>
-<code>Ctrl+Shift+S</code> Save the current file as a new path<br>
-<code>Ctrl+W</code> Close the current window<br>
-<code>Ctrl+P</code> Print<br>
-<code>Ctrl+Q</code> Quit Twig, prompting for unsaved files<br>
-<code>Ctrl+Z</code> Undo<br>
-<code>Ctrl+Shift+Z or Ctrl+Y</code> Redo<br>
-<code>Ctrl+X</code> Cut<br>
-<code>Ctrl+C</code> Copy<br>
-<code>Ctrl+V</code> Paste<br>
-<code>Ctrl+A</code> Select all<br>
-<code>Ctrl+F</code> Open or focus Find and Replace<br>
-<code>Ctrl+G</code> Find next match<br>
-<code>Ctrl+Shift+G</code> Find previous match<br>
-<code>Ctrl+H or Ctrl+R</code>	Open Find and Replace with the replace field focused<br>
-<code>Ctrl+J</code>	Jump to line<br>
-<code>Tab with selected lines</code> Indent selected lines with spaces<br>
-<code>Shift+Tab with selected lines</code> Unindent selected lines<br>
-<code>Enter in Find</code> Find next match<br>
-<code>Enter in Replace</code> Replace current match<br>
+
+<div class="site-title">
+  <img src="https://gitman.io/patx/twig/raw/docs/logo.png" alt="Twig logo">
+  <h1>Twig</h1>
+</div>
+<p>An ultra-minimal GTK code editor for Debian/Ubuntu based Linux distros.</p>
+<p>One file per window. No toolbar. No menu bar. <a href="https://gitman.io/patx/twig/raw/docs/screenshot.png" target="_blank">View screenshot</a>.</p>
+
+<h2>Install</h2>
+<pre>sudo apt install python3-gi gir1.2-gtk-3.0 gir1.2-gtksource-4
+git clone https://gitman.io/git/patx/twig
+cd twig
+sudo make install</pre>
+
+<h2>Features</h2>
+<ul>
+  <li>Syntax highlighting</li>
+  <li>Line numbers</li>
+  <li>Find &amp; replace</li>
+  <li>Undo / redo</li>
+  <li>Auto-indent</li>
+  <li>Dirty indicators</li>
+  <li>Jump to line</li>
+  <li>Print support</li>
+</ul>
+
+<h2>Keyboard shortcuts</h2>
+<table>
+  <tr><td><code>Ctrl+N</code> / <code>Ctrl+T</code></td><td>New window</td></tr>
+  <tr><td><code>Ctrl+O</code></td><td>Open file(s)</td></tr>
+  <tr><td><code>Ctrl+S</code></td><td>Save</td></tr>
+  <tr><td><code>Ctrl+Shift+S</code></td><td>Save as</td></tr>
+  <tr><td><code>Ctrl+W</code></td><td>Close window</td></tr>
+  <tr><td><code>Ctrl+P</code></td><td>Print</td></tr>
+  <tr><td><code>Ctrl+Q</code></td><td>Quit</td></tr>
+  <tr><td><code>Ctrl+Z</code></td><td>Undo</td></tr>
+  <tr><td><code>Ctrl+Shift+Z</code> / <code>Ctrl+Y</code></td><td>Redo</td></tr>
+  <tr><td><code>Ctrl+X</code> / <code>Ctrl+C</code> / <code>Ctrl+V</code></td><td>Cut / Copy / Paste</td></tr>
+  <tr><td><code>Ctrl+A</code></td><td>Select all</td></tr>
+  <tr><td><code>Ctrl+F</code></td><td>Find</td></tr>
+  <tr><td><code>Ctrl+G</code> / <code>Ctrl+Shift+G</code></td><td>Find next / previous</td></tr>
+  <tr><td><code>Ctrl+H</code> / <code>Ctrl+R</code></td><td>Find &amp; replace</td></tr>
+  <tr><td><code>Ctrl+J</code></td><td>Jump to line</td></tr>
+  <tr><td><code>Tab</code> with selection</td><td>Indent</td></tr>
+  <tr><td><code>Shift+Tab</code> with selection</td><td>Unindent</td></tr>
+  <tr><td><code>Enter</code> in Find</td><td>Find next</td></tr>
+  <tr><td><code>Enter</code> in Replace</td><td>Replace match</td></tr>
+</table>
+
+<footer><a href="https://gitman.io/patx/twig">GitMan</a> &nbsp;· MIT license</footer>
+
 </body>
 </html>

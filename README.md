@@ -45,6 +45,12 @@ Uninstall:
 sudo make uninstall
 ```
 
+Build a Debian package:
+
+```sh
+make deb
+```
+
 ## Shortcuts
 
 Twig intentionally has no toolbar or menu bar. Use these keyboard shortcuts:

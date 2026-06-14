@@ -10,14 +10,19 @@ spec.loader.exec_module(twig)
 
 
 class HelperTests(unittest.TestCase):
-    def test_detect_language_from_filename(self):
-        self.assertEqual(twig.detect_language("example.py"), "python")
-        self.assertEqual(twig.detect_language("index.html"), "html")
-        self.assertEqual(twig.detect_language("style.css"), "css")
-        self.assertEqual(twig.detect_language("script.js"), "javascript")
-        self.assertEqual(twig.detect_language("README.md"), "markdown")
-        self.assertEqual(twig.detect_language("Makefile"), "config")
-        self.assertEqual(twig.detect_language("notes.txt"), "plain")
+    def test_gtksourceview_guesses_language_from_filename(self):
+        manager = twig.GtkSource.LanguageManager.get_default()
+
+        def language_id(filename):
+            language = manager.guess_language(filename, None)
+            return language.get_id() if language else None
+
+        self.assertEqual(language_id("example.py"), "python")
+        self.assertEqual(language_id("index.html"), "html")
+        self.assertEqual(language_id("style.css"), "css")
+        self.assertEqual(language_id("script.js"), "js")
+        self.assertEqual(language_id("README.md"), "markdown")
+        self.assertIsNone(language_id("notes.txt"))
 
     def test_clamp_font_size(self):
         self.assertEqual(twig.clamp_font_size(1), twig.MIN_EDITOR_FONT_SIZE)

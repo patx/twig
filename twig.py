@@ -2,6 +2,7 @@
 """Twig: a tiny GTK code editor for lightweight Linux desktops."""
 
 import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -37,6 +38,23 @@ MIN_EDITOR_FONT_SIZE = 6
 MAX_EDITOR_FONT_SIZE = 24
 EDITOR_FONT_STEP = 1
 HEADERBAR_DESKTOPS = {"gnome", "pantheon"}
+
+
+def clamp_font_size(size):
+    return min(MAX_EDITOR_FONT_SIZE, max(MIN_EDITOR_FONT_SIZE, size))
+
+
+def line_count_for_text(text):
+    return text.count("\n") + 1
+
+
+def select_print_command(is_available=None):
+    if is_available is None:
+        is_available = lambda command: shutil.which(command) is not None
+    for command in ("lpr", "lp"):
+        if is_available(command):
+            return command
+    return None
 
 
 def should_use_headerbar():
@@ -189,6 +207,7 @@ class TwigWindow(Gtk.ApplicationWindow):
             "copy": self.on_copy,
             "paste": self.on_paste,
             "select-all": self.on_select_all,
+            "delete-line": self.on_delete_line,
         }
         for name, callback in actions.items():
             action = Gio.SimpleAction.new(name, None)
@@ -260,10 +279,7 @@ class TwigWindow(Gtk.ApplicationWindow):
         self.view.queue_draw()
 
     def _change_editor_font_size(self, delta):
-        new_size = min(
-            MAX_EDITOR_FONT_SIZE,
-            max(MIN_EDITOR_FONT_SIZE, self.editor_font_size + delta),
-        )
+        new_size = clamp_font_size(self.editor_font_size + delta)
         if new_size != self.editor_font_size:
             self.editor_font_size = new_size
             self._apply_editor_font_size()
@@ -489,6 +505,32 @@ class TwigWindow(Gtk.ApplicationWindow):
         self.buffer.end_user_action()
         return True
 
+    def delete_selected_lines(self):
+        if self.buffer.get_has_selection():
+            start, last_line = self.selected_line_bounds()
+        else:
+            cursor = self.buffer.get_iter_at_mark(self.buffer.get_insert())
+            start = self.buffer.get_iter_at_line(cursor.get_line())
+            last_line = cursor.get_line()
+
+        if last_line + 1 < self.buffer.get_line_count():
+            end = self.buffer.get_iter_at_line(last_line + 1)
+        else:
+            end = self.buffer.get_end_iter()
+            if start.get_line() > 0:
+                start.backward_char()
+
+        cursor_offset = start.get_offset()
+        self.buffer.begin_user_action()
+        self.buffer.delete(start, end)
+        self.buffer.end_user_action()
+
+        target_offset = min(cursor_offset, self.buffer.get_end_iter().get_offset())
+        target = self.buffer.get_iter_at_offset(target_offset)
+        self.buffer.place_cursor(target)
+        self.view.scroll_to_iter(target, 0.15, False, 0.0, 0.0)
+        return True
+
     def jump_to_line(self, line_number):
         line_count = self.buffer.get_line_count()
         line_index = max(0, min(line_number - 1, line_count - 1))
@@ -625,23 +667,24 @@ class TwigWindow(Gtk.ApplicationWindow):
     def on_select_all(self, *_args):
         self.buffer.select_range(self.buffer.get_start_iter(), self.buffer.get_end_iter())
 
+    def on_delete_line(self, *_args):
+        self.delete_selected_lines()
+
     def _is_editor_font_shortcut(self, event):
         state = event.state & Gtk.accelerator_get_default_mod_mask()
-        required = Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK
-        if (state & required) != required:
+        if not state & Gdk.ModifierType.CONTROL_MASK:
             return False
         return event.keyval in (
             Gdk.KEY_plus,
             Gdk.KEY_equal,
             Gdk.KEY_KP_Add,
             Gdk.KEY_minus,
-            Gdk.KEY_underscore,
             Gdk.KEY_KP_Subtract,
         )
 
     def on_key_press(self, _view, event):
         if self._is_editor_font_shortcut(event):
-            if event.keyval in (Gdk.KEY_minus, Gdk.KEY_underscore, Gdk.KEY_KP_Subtract):
+            if event.keyval in (Gdk.KEY_minus, Gdk.KEY_KP_Subtract):
                 return self._change_editor_font_size(-EDITOR_FONT_STEP)
             return self._change_editor_font_size(EDITOR_FONT_STEP)
         if event.keyval == Gdk.KEY_Tab and self.buffer.get_has_selection():
@@ -785,16 +828,17 @@ class TwigApp(Gtk.Application):
             "app.quit": ["<Primary>q"],
             "win.print": ["<Primary>p"],
             "win.find": ["<Primary>f"],
-            "win.replace": ["<Primary>h", "<Primary>r"],
-            "win.find-next": ["F3", "<Primary>g"],
-            "win.find-prev": ["<Shift>F3", "<Primary><Shift>g"],
+            "win.replace": ["<Primary>r"],
+            "win.find-next": ["<Primary>g"],
+            "win.find-prev": ["<Primary><Shift>g"],
             "win.jump-to": ["<Primary>j"],
             "win.undo": ["<Primary>z"],
-            "win.redo": ["<Primary>y", "<Primary><Shift>z"],
+            "win.redo": ["<Primary><Shift>z"],
             "win.cut": ["<Primary>x"],
             "win.copy": ["<Primary>c"],
             "win.paste": ["<Primary>v"],
             "win.select-all": ["<Primary>a"],
+            "win.delete-line": ["<Primary>d"],
         }
         for action, accels in shortcuts.items():
             self.set_accels_for_action(action, accels)

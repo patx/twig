@@ -64,18 +64,19 @@ Twig intentionally has no toolbar or menu bar. Use these keyboard shortcuts:
 | `Ctrl+P` | Print |
 | `Ctrl+Q` | Quit Twig, prompting for unsaved files |
 | `Ctrl+Z` | Undo |
-| `Ctrl+Shift+Z` or `Ctrl+Y` | Redo |
+| `Ctrl+Shift+Z` | Redo |
 | `Ctrl+X` | Cut |
 | `Ctrl+C` | Copy |
 | `Ctrl+V` | Paste |
 | `Ctrl+A` | Select all |
+| `Ctrl+D` | Delete the selected lines or current line |
 | `Ctrl+F` | Open or focus Find and Replace |
-| `Ctrl+G` or `F3` | Find next match |
-| `Ctrl+Shift+G` or `Shift+F3` | Find previous match |
-| `Ctrl+H` or `Ctrl+R` | Open Find and Replace with the replace field focused |
+| `Ctrl+G` | Find next match |
+| `Ctrl+Shift+G` | Find previous match |
+| `Ctrl+R` | Open Find and Replace with the replace field focused |
 | `Ctrl+J` | Jump to line |
-| `Ctrl+Shift++` | Increase editor font size |
-| `Ctrl+Shift+-` | Decrease editor font size |
+| `Ctrl++` | Increase editor font size |
+| `Ctrl+-` | Decrease editor font size |
 | `Tab` with selected lines | Indent selected lines with spaces |
 | `Shift+Tab` with selected lines | Unindent selected lines |
 | `Enter` in Find | Find next match |

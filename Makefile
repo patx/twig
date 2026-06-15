@@ -3,7 +3,11 @@ BINDIR ?= $(PREFIX)/bin
 DATADIR ?= $(PREFIX)/share
 APPDIR ?= $(DATADIR)/applications
 ICONDIR ?= $(DATADIR)/icons/hicolor
+METAINFO_DIR ?= $(DATADIR)/metainfo
 MANDIR ?= $(DATADIR)/man
+APP_ID ?= io.github.patx.twig
+DESKTOP_FILE ?= $(APP_ID).desktop
+METAINFO_FILE ?= $(APP_ID).metainfo.xml
 PACKAGE ?= twig
 VERSION ?= 0.1.1
 DEB_ARCH ?= all
@@ -18,25 +22,28 @@ all:
 
 install:
 	install -Dm755 twig.py "$(DESTDIR)$(BINDIR)/twig"
-	install -Dm644 twig.desktop "$(DESTDIR)$(APPDIR)/twig.desktop"
+	install -Dm644 "$(DESKTOP_FILE)" "$(DESTDIR)$(APPDIR)/$(DESKTOP_FILE)"
+	install -Dm644 "$(METAINFO_FILE)" "$(DESTDIR)$(METAINFO_DIR)/$(METAINFO_FILE)"
 	install -Dm644 docs/twig.1 "$(DESTDIR)$(MANDIR)/man1/twig.1"
 	for size in 16 24 32 48 64 128 256 512; do \
 		install -Dm644 "icons/hicolor/$${size}x$${size}/apps/twig.png" \
-			"$(DESTDIR)$(ICONDIR)/$${size}x$${size}/apps/twig.png"; \
+			"$(DESTDIR)$(ICONDIR)/$${size}x$${size}/apps/$(APP_ID).png"; \
 	done
 
 uninstall:
 	rm -f "$(DESTDIR)$(BINDIR)/twig"
-	rm -f "$(DESTDIR)$(APPDIR)/twig.desktop"
+	rm -f "$(DESTDIR)$(APPDIR)/$(DESKTOP_FILE)"
+	rm -f "$(DESTDIR)$(METAINFO_DIR)/$(METAINFO_FILE)"
 	rm -f "$(DESTDIR)$(MANDIR)/man1/twig.1"
 	for size in 16 24 32 48 64 128 256 512; do \
-		rm -f "$(DESTDIR)$(ICONDIR)/$${size}x$${size}/apps/twig.png"; \
+		rm -f "$(DESTDIR)$(ICONDIR)/$${size}x$${size}/apps/$(APP_ID).png"; \
 	done
 
 check:
 	python3 -m py_compile twig.py
 	python3 -m unittest discover -s tests
-	desktop-file-validate twig.desktop
+	desktop-file-validate "$(DESKTOP_FILE)"
+	appstreamcli validate --no-net "$(METAINFO_FILE)"
 
 deb: check clean-deb
 	$(MAKE) install DESTDIR="$(CURDIR)/$(DEB_ROOT)" PREFIX=/usr

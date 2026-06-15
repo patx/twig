@@ -19,6 +19,12 @@ Some older systems package GtkSourceView 3 instead of 4:
 sudo apt install gir1.2-gtksource-3.0
 ```
 
+For packaging validation:
+
+```sh
+sudo apt install appstream desktop-file-utils
+```
+
 ## Run
 
 ```sh
@@ -49,6 +55,17 @@ Build a Debian package:
 ```sh
 make deb
 ```
+
+Build the Flatpak for Flathub testing:
+
+```sh
+flatpak install --user flathub org.flatpak.Builder
+flatpak run org.flatpak.Builder --force-clean --user --install --install-deps-from=flathub build-dir io.github.patx.twig.yml
+flatpak run io.github.patx.twig
+```
+
+The Flatpak manifest expects the `v0.1.1` tag to exist on
+`https://github.com/patx/twig.git` before it is submitted to Flathub.
 
 ## Shortcuts
 

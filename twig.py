@@ -30,7 +30,7 @@ except (ImportError, ValueError) as exc:
 
 
 APP_ID = "io.github.patx.twig"
-APP_ICON = "twig"
+APP_ICON = APP_ID
 UNTITLED = "Untitled"
 BASE_DIR = Path(__file__).resolve().parent
 DEFAULT_EDITOR_FONT_SIZE = 10

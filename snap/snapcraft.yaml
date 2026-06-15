@@ -25,7 +25,7 @@ platforms:
 apps:
   twig:
     command: usr/bin/twig
-    desktop: usr/share/applications/twig.desktop
+    desktop: usr/share/applications/io.github.patx.twig.desktop
     extensions: [gnome]
     plugs:
       - desktop

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.patx.twig</id>
+  <name>Twig</name>
+  <summary>Lightweight GTK code editor</summary>
+  <developer id="io.github.patx">
+    <name>Harrison Erd</name>
+  </developer>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+
+  <description>
+    <p>
+      Twig is a small GTK code editor for lightweight Linux desktops. It keeps
+      the interface minimal and focuses on one file per window.
+    </p>
+    <p>Twig includes the editing tools expected from a compact code editor:</p>
+    <ul>
+      <li>Syntax highlighting and line numbers</li>
+      <li>Open, save, save as, and print actions</li>
+      <li>Find and replace</li>
+      <li>Undo, redo, indentation, and jump to line</li>
+      <li>Dirty indicators and save-before-close prompts</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.patx.twig.desktop</launchable>
+  <provides>
+    <binary>twig</binary>
+  </provides>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Twig editing a source file with syntax highlighting and line numbers</caption>
+      <image type="source" width="916" height="683">https://raw.githubusercontent.com/patx/twig/main/docs/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <url type="homepage">https://gitman.io/patx/twig</url>
+  <url type="bugtracker">https://github.com/patx/twig/issues</url>
+  <url type="vcs-browser">https://github.com/patx/twig</url>
+
+  <content_rating type="oars-1.1" />
+
+  <releases>
+    <release version="0.1.1" date="2026-06-15">
+      <description>
+        <p>
+          Initial packaged release with syntax highlighting, line numbers,
+          find and replace, printing, and save-before-close prompts.
+        </p>
+      </description>
+    </release>
+  </releases>
+</component>

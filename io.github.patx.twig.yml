@@ -1,0 +1,43 @@
+app-id: io.github.patx.twig
+runtime: org.gnome.Platform
+runtime-version: '50'
+sdk: org.gnome.Sdk
+command: twig
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --socket=cups
+  - --filesystem=home
+
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/gir-1.0
+  - /share/gtk-doc
+  - /share/vala
+
+modules:
+  - name: gtksourceview4
+    buildsystem: meson
+    config-opts:
+      - -Dgtk_doc=false
+      - -Dinstall_tests=false
+      - -Dvapi=false
+    sources:
+      - type: archive
+        url: https://download.gnome.org/sources/gtksourceview/4.8/gtksourceview-4.8.4.tar.xz
+        sha256: 7ec9d18fb283d1f84a3a3eff3b7a72b09a10c9c006597b3fbabbb5958420a87d
+
+  - name: twig
+    buildsystem: simple
+    build-commands:
+      - make install PREFIX=/app
+    sources:
+      - type: git
+        url: https://github.com/patx/twig.git
+        tag: v0.1.1
+        x-checker-data:
+          type: git
+          tag-pattern: ^v([\d.]+)$

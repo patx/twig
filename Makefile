@@ -12,7 +12,9 @@ DEB_ROOT ?= $(DEB_BUILD_DIR)/$(PACKAGE)
 DEB_FILE ?= dist/$(PACKAGE)_$(VERSION)_$(DEB_ARCH).deb
 DEB_CHANGELOG_DATE ?= $(shell date -R)
 
-.PHONY: install uninstall check deb clean-deb
+.PHONY: all install uninstall check deb clean-deb
+
+all:
 
 install:
 	install -Dm755 twig.py "$(DESTDIR)$(BINDIR)/twig"

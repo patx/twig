@@ -1,0 +1,50 @@
+name: twig
+title: Twig
+summary: Lightweight GTK code editor
+description: |
+  Twig is a small GTK code editor intended for lightweight Linux desktops.
+  It focuses on the basics: one file per window, open/save, syntax
+  highlighting, line numbers, find/replace, undo/redo, dirty indicators,
+  and save-before-close prompts.
+
+version: "0.1.1"
+base: core24
+grade: stable
+confinement: strict
+license: MIT
+icon: icons/hicolor/512x512/apps/twig.png
+website: https://gitman.io/patx/twig
+source-code: https://github.com/patx/twig
+issues: https://github.com/patx/twig/issues
+contact: me@harrisonerd.com
+
+platforms:
+  amd64:
+  arm64:
+
+apps:
+  twig:
+    command: usr/bin/twig
+    desktop: usr/share/applications/twig.desktop
+    extensions: [gnome]
+    plugs:
+      - desktop
+      - desktop-legacy
+      - home
+      - removable-media
+      - wayland
+      - x11
+
+parts:
+  twig:
+    plugin: make
+    source: .
+    make-parameters:
+      - PREFIX=/usr
+    stage-packages:
+      - python3
+      - python3-gi
+      - gir1.2-gtk-3.0
+      - gir1.2-gtksource-4
+      - libgtksourceview-4-0
+      - shared-mime-info
